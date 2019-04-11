@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script type="text/javascript">
+function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+  for(var i=0;i < ca.length;i++) {
+      var c = ca[i];
+      while (c.charAt(0)==' ') c = c.substring(1,c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+  } return null;
+}
+function checkOauthCookie(){
+  var user_id = getCookie("TallyPokeMap_ID");
+  var user_guild = getCookie("TallyPokeMap_Guild");
+  if(user_id && user_guild) { window.location.href = `/login?id=${user_id}&guild=${user_guild}`; }
+  else{ window.location.href = "/login?id=noid&guild=noguild"; }
+}
+</script>
+</head>
+<body onload="checkOauthCookie()">
+    <div class="container">
+        <div class="jumbotron">
+            <h1>res.sendFile() Works!</h1>
+        </div>
+    </div>
+</body>
+</html>
