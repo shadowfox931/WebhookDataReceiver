@@ -39,15 +39,25 @@ module.exports.run = async (MAIN, has_iv, target, sighting, internal_value, time
     case 1: gender = ' '+MAIN.emotes.male; break;
     case 2: gender = ' '+MAIN.emotes.female; break;
   }
+  let gender_str = '';
+  switch(sighting.gender){
+    case 1: gender_str = 'Male '; break;
+    case 2: gender_str = 'Female '; break;
+  }
+
+  // GET FORM
+  let form_str = ''
+  if(sighting.form > 0 && MAIN.pokemon.alolan_forms.indexOf(sighting.form) >= 0){ form_str = 'Alolan ';}
   // Round IV
   internal_value = Math.round(internal_value);
 
   // GET ROLEID
   let roleID = '';
-  if (internal_value == 100 || pokemon_name == 'Unown'){ roleID = '@everyone'; } else { roleID = ''; }
+  //if (internal_value == 100 || pokemon_name == 'Unown'){ roleID = '@everyone'; } else { roleID = ''; }
 
   // DESPAWN VERIFICATION
   let verified = sighting.disappear_time_verified ? MAIN.emotes.checkYes : MAIN.emotes.yellowQuestion;
+  let verified_timer = sighting.disappear_time_verified ? hide_mins + ' mins ' + hide_secs + ' secs' : '45 min 00 sec';
 
   // GET WEATHER BOOST
   let weather_boost = '';
@@ -71,7 +81,15 @@ module.exports.run = async (MAIN, has_iv, target, sighting, internal_value, time
       .addField('**'+pokemon_name+'** '+form_name+gender,verified+': '+hide_time+' (*'+hide_mins+'m '+hide_secs+'s*)\n'+pokemon_type+weather_boost)
       .addField(embed_area+' | Directions:','[Google Maps](https://www.google.com/maps?q='+sighting.latitude+','+sighting.longitude+') | '
                                            +'[Apple Maps](http://maps.apple.com/maps?daddr='+sighting.latitude+','+sighting.longitude+'&z=10&t=s&dirflg=d) | '
-                                           +'[Scan Map]('+MAIN.config.FRONTEND_URL+'?lat='+sighting.latitude+'&lon='+sighting.longitude+'&zoom=15)',false);
+                                           +'[Scan Map]('+MAIN.config.FRONTEND_URL+'@/'+sighting.latitude+'/'+sighting.longitude+'/14)',false);
+    var report_dict = {
+      "type":"wild",
+      "pokemon":gender_str + form_str + pokemon_name,
+      "gps": sighting.latitude + "," + sighting.longitude,
+      "weather": weather_boost,
+      "expire":verified_timer
+    };
+    var pokemon_message = '!alarm ' + JSON.stringify(report_dict);
   } else{
 
     if(sighting.cp == null){ return; }
@@ -92,7 +110,23 @@ module.exports.run = async (MAIN, has_iv, target, sighting, internal_value, time
       //.addField('**Max CP**'+MAIN.Get_CP(sighting.id, sighting.form, 40))
       .addField(embed_area+' | Directions:','[Google Maps](https://www.google.com/maps?q='+sighting.latitude+','+sighting.longitude+') | '
                                            +'[Apple Maps](http://maps.apple.com/maps?daddr='+sighting.latitude+','+sighting.longitude+'&z=10&t=s&dirflg=d) | '
-                                           +'[Scan Map]('+MAIN.config.FRONTEND_URL+'?lat='+sighting.latitude+'&lon='+sighting.longitude+'&zoom=15)',false);
+                                         +'[Scan Map]('+MAIN.config.FRONTEND_URL+'@/'+sighting.latitude+'/'+sighting.longitude+'/14)',false);
+    var report_dict = {
+      "type":"wild",
+      "pokemon":gender_str + form_str + pokemon_name,
+      "gps": sighting.latitude + "," + sighting.longitude,
+      "weather": weather_boost,
+      "iv_percent": internal_value,
+      "iv_long": sighting.individual_attack + " / " + sighting.individual_defense + " / " + sighting.individual_stamina,
+      "level":sighting.pokemon_level,
+      "cp":sighting.cp,
+      "gender":gender_str,
+      "height":Math.floor(sighting.height*100)/100+'m',
+      "weight":Math.floor(sighting.weight*100)/100+'kg',
+      "moveset":move_name_1 + " / " + move_name_2,
+      "expire":verified_timer
+    };
+    var pokemon_message = '!alarm ' + JSON.stringify(report_dict);
   }
 
   if(member){
@@ -100,7 +134,7 @@ module.exports.run = async (MAIN, has_iv, target, sighting, internal_value, time
     return MAIN.Send_DM(server.id, member.id, pokemon_embed, target.bot);
   } else if(MAIN.config.POKEMON.Discord_Feeds == 'ENABLED'){
     if(MAIN.logging == 'ENABLED'){ console.info('[Pokébot] ['+MAIN.Bot_Time(null,'stamp')+'] [Embed] [pokemon.js] Sent a '+pokemon_name+' to '+target.guild.name+' ('+target.id+').'); }
-    return MAIN.Send_Embed('pokemon', 0, server, roleID, pokemon_embed, target.id);
+    return MAIN.Send_Embed('pokemon', 0, server, roleID, pokemon_message, pokemon_embed, target.id);
   } else{ return; }
 
 }

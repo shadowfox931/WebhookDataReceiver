@@ -84,7 +84,7 @@ module.exports.run = async (MAIN, target, raid, raid_type, main_area, sub_area, 
         .addField('Hatches: '+hatch_time,embed_area, false)
         .addField('Directions:','[Google Maps](https://www.google.com/maps?q='+raid.latitude+','+raid.longitude+') | '
                                              +'[Apple Maps](http://maps.apple.com/maps?daddr='+raid.latitude+','+raid.longitude+'&z=10&t=s&dirflg=d) | '
-                                             +'[Scan Map]('+MAIN.config.FRONTEND_URL+'?lat='+raid.latitude+'&lon='+raid.longitude+'&zoom=15)',false)
+                                             +'[Scan Map]('+MAIN.config.FRONTEND_URL+'@/'+raid.latitude+'/'+raid.longitude+'/15)',false)
       // ADD FOOTER IF RAID LOBBIES ARE ENABLED
       if(MAIN.config.Raid_Lobbies == 'ENABLED'){ raid_embed.setFooter(raid.gym_id); }
 
@@ -94,7 +94,15 @@ module.exports.run = async (MAIN, target, raid, raid_type, main_area, sub_area, 
         MAIN.Send_DM(server.id, member.id, raid_embed, target.bot);
       } else if(MAIN.config.RAID.Discord_Feeds == 'ENABLED'){
         if(MAIN.logging == 'ENABLED'){ console.info('[Pokébot] ['+MAIN.Bot_Time(null,'stamp')+'] [Embed] [raids.js] Sent a Level '+raid.level+' Raid Egg to '+target.guild.name+' ('+target.id+').'); }
-        MAIN.Send_Embed('raid', raid.level, server, roleID, raid_embed, target.id);
+        let report_dict = {
+          "type":"egg",
+          "level":raid.level,
+          "gps":raid.latitude + "," + raid.longitude,
+          "gym":gym_name,
+          "raidexp":hatch_mins
+        };
+        let raid_message = '!alarm ' + JSON.stringify(report_dict);
+        if(raid.is_exclusive == false){MAIN.Send_Embed('raid', raid.level, server, roleID, raid_message, raid_embed, target.id);}
       } else{ console.info('[Pokébot] Raid ignored due to Disabled Discord Feed setting.'); }
 
       // STRINGIFY THE EMBED
@@ -121,8 +129,10 @@ module.exports.run = async (MAIN, target, raid, raid_type, main_area, sub_area, 
       // DETERMINE POKEMON FORM
       form = raid.form;
       let form_name = '';
+      let form_str = '';
       if (form > 0){
         form_name = ' ['+MAIN.forms[raid.pokemon_id][form]+']';
+        form_str = MAIN.forms[raid.pokemon_id][form] + ' ';
       }
 
       await MAIN.pokemon[raid.pokemon_id].types.forEach((type) => {
@@ -169,7 +179,16 @@ module.exports.run = async (MAIN, target, raid, raid_type, main_area, sub_area, 
         MAIN.Send_DM(server.id, member.id, raid_embed, target.bot);
       } else if(MAIN.config.RAID.Discord_Feeds == 'ENABLED'){
         if(MAIN.logging == 'ENABLED'){ console.info('[Pokébot] ['+MAIN.Bot_Time(null,'stamp')+'] [Embed] [raids.js] Sent a '+pokemon_name+' Raid Boss to '+target.guild.name+' ('+target.id+').'); }
-        MAIN.Send_Embed('raid', raid.level, server, roleID, raid_embed, target.id);
+        var report_dict = {
+          "type":"raid",
+          "pokemon":form_str + pokemon_name,
+          "gps":raid.latitude + "," + raid.longitude,
+          "gym":gym_name,
+          "raidexp":end_mins,
+          "moves":move_name_1 + " / " + move_name_2
+        };
+        var raid_message = '!alarm ' + JSON.stringify(report_dict);
+        if(raid.is_exclusive == false){MAIN.Send_Embed('raid', raid.level, server, roleID, raid_message, raid_embed, target.id);}
       } else{ console.info('[Pokébot] Raid ignored due to Disabled Discord Feed setting.'); }
 
       // STRINGIFY THE EMBED

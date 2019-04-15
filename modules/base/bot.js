@@ -172,9 +172,9 @@ MAIN.on('raw', event => {
 });
 
 // CHOOSE NEXT BOT AND SEND EMBED
-MAIN.Send_Embed = (type, raid_level, server, roleID, embed, channel_id) => {
+MAIN.Send_Embed = (type, raid_level, server, roleID, message, embed, channel_id) => {
   if(MAIN.Next_Bot == MAIN.BOTS.length-1 && MAIN.BOTS[0]){ MAIN.Next_Bot = 0; } else{ MAIN.Next_Bot++; }
-	return MAIN.BOTS[MAIN.Next_Bot].channels.get(channel_id).send(roleID, embed)
+	return MAIN.BOTS[MAIN.Next_Bot].channels.get(channel_id).send(message, {embed: embed})
     .then( message => { if(type == 'raid' && raid_level >= server.min_raid_lobbies ){
 	message.react(MAIN.emotes.plusOneReact.id).catch(console.error).then( reaction => {
 	message.react(MAIN.emotes.plusTwoReact.id).catch(console.error).then( reaction => {
@@ -549,8 +549,15 @@ async function bot_login(){
   MAIN.Active = true; MAIN.Next_Bot = 0;
 
   // CHECK FOR CUSTOM EMOTES (CHUCKLESLOVE MERGE)
-  MAIN.emotes = new Emojis.DiscordEmojis();
-  return MAIN.emotes.Load(MAIN);
+  if(MAIN.config.EMOTES.Custom == false){
+    MAIN.emotes = new Emojis.DiscordEmojis();
+    MAIN.Custom_Emotes = true;
+    MAIN.emotes.Load(MAIN);
+  }
+  else{
+    MAIN.Custom_Emotes = false;
+    MAIN.emotes = ini.parse(fs.readFileSync('./config/emotes.ini', 'utf-8'));
+  } return;
 }
 
 var ontime_servers = [], ontime_times = [];
