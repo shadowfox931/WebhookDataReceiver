@@ -48,20 +48,14 @@ module.exports.run = async (MAIN, sighting, main_area, sub_area, embed_area, ser
       if (filter[MAIN.pokemon[sighting.pokemon_id].name] != 'True'){
         if (filter[MAIN.pokemon[sighting.pokemon_id].name] == 'False'){
           break;
-        } else if (filter[MAIN.pokemon[sighting.pokemon_id].name].min_iv > internal_value){
+        } else if ((internal_value > filter[MAIN.pokemon[sighting.pokemon_id].name].min_iv && internal_value <= filter.max_iv) || (sighting.cp > filter.min_cp && sighting.cp <= filter.max_cp) || (sighting.pokemon_level > filter.min_level && sighting.pokemon_level <= filter.max_level){
+          Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone); break;
+        } else if (filter[MAIN.pokemon[sighting.pokemon_id].name].min_iv > internal_value || filter.max_iv < internal_value){
           sightingFailed(MAIN, filter, 'IV'); break;
-        } else if (filter.max_iv < internal_value){
-          sightingFailed(MAIN, filter, 'IV'); break;
-        } else if (filter.min_cp > sighting.cp){
+        } else if (filter.min_cp > sighting.cp || filter.max_cp < sighting.cp){
           sightingFailed(MAIN, filter, 'CP'); break;
-        } else if (filter.max_cp < sighting.cp){
-          sightingFailed(MAIN, filter, 'CP'); break;
-        } else if (filter.min_level > sighting.pokemon_level){
+        } else if (filter.min_level > sighting.pokemon_level || filter.max_level < sighting.pokemon_level){
           sightingFailed(MAIN, filter, 'LEVEL'); break;
-        } else if (filter.max_level < sighting.pokemon_level){
-          sightingFailed(MAIN, filter, 'LEVEL'); break;
-        } else {
-          Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
         }
         break;
       }
@@ -72,50 +66,29 @@ module.exports.run = async (MAIN, sighting, main_area, sub_area, embed_area, ser
         let max_iv = filter.max_iv.split('/');
         if (!filter[MAIN.pokemon[sighting.pokemon_id].name]){
           sightingFailed(MAIN, filter, 'IV'); break;
-        } else if (min_iv[0] > sighting.individual_attack){
-          sightingFailed(MAIN, filter, 'IV'); break;
-        } else if (min_iv[1] > sighting.individual_defense){
-          sightingFailed(MAIN, filter, 'IV'); break;
-        } else if (min_iv[2] > sighting.individual_stamina){
-          sightingFailed(MAIN, filter, 'IV'); break;
-        } else if (max_iv[0] < sighting.individual_attack){
-          sightingFailed(MAIN, filter, 'IV'); break;
-        } else if (max_iv[1] < sighting.individual_defense){
-          sightingFailed(MAIN, filter, 'IV'); break;
-        } else if (max_iv[2] < sighting.individual_stamina){
-          sightingFailed(MAIN, filter, 'IV');  break;
-        } else if (filter.min_cp > sighting.cp){
-          sightingFailed(MAIN, filter, 'CP'); break;
-        } else if (filter.max_cp < sighting.cp){
-          sightingFailed(MAIN, filter, 'CP'); break;
-        } else if (filter.min_level > sighting.pokemon_level){
-          sightingFailed(MAIN, filter, 'LEVEL'); break;
-        } else if (filter.max_level < sighting.pokemon_level){
-          sightingFailed(MAIN, filter, 'LEVEL'); break;
-        } else {
+        } else if ((sighting.individual_attack > min_iv[0] && sighting.individual_attack <= max_iv[0]) || (sighting.individual_defense > min_iv[1] && sighting.individual_defense <= max_iv[1]) || (sighting.individual_stamina > min_iv[2] && sighting.individual_stamina <= max_iv[2])){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
           }
+        } else if (min_iv[0] > sighting.individual_attack || min_iv[1] > sighting.individual_defense || min_iv[2] > sighting.individual_stamina || max_iv[0] < sighting.individual_attack || max_iv[1] < sighting.individual_defense || max_iv[2] < sighting.individual_stamina){
+          sightingFailed(MAIN, filter, 'IV'); break;
+        } else if (filter.min_cp > sighting.cp || filter.max_cp < sighting.cp){
+          sightingFailed(MAIN, filter, 'CP'); break;
+        } else if (filter.min_level > sighting.pokemon_level || filter.max_level < sighting.pokemon_level){
+          sightingFailed(MAIN, filter, 'LEVEL'); break;
         }
         break;
       } else {
-        if (filter.min_iv > internal_value){
-          sightingFailed(MAIN, filter, 'IV'); break;
-        } else if (filter.max_iv < internal_value){
-          sightingFailed(MAIN, filter, 'IV'); break;
-        } else if (filter.min_cp > sighting.cp){
-          sightingFailed(MAIN, filter, 'CP'); break;
-        } else if (filter.max_cp < sighting.cp){
-          sightingFailed(MAIN, filter, 'CP'); break;
-        } else if (filter.min_level > sighting.pokemon_level){
-          sightingFailed(MAIN, filter, 'LEVEL'); break;
-        } else if (filter.max_level < sighting.pokemon_level){
-          sightingFailed(MAIN, filter, 'LEVEL'); break;
-        } else {
+        if ((internal_value > filter.min_iv && internal_value <= filter.max_iv) || (sighting.cp > filter.min_cp && sighting.cp <= filter.max_cp) || (sighting.pokemon_level > filter.min_level && sighting.pokemon_level <= filter.max_level)){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
           }
-        }
+        } else if(filter.min_iv > internal_value || filter.max_iv < internal_value){
+          sightingFailed(MAIN, filter, 'IV'); break;
+        } else if (filter.min_cp > sighting.cp || filter.max_cp < sighting.cp){
+          sightingFailed(MAIN, filter, 'CP'); break;
+        } else if (filter.min_level > sighting.pokemon_level || filter.max_level < sighting.pokemon_level){
+          sightingFailed(MAIN, filter, 'LEVEL'); break;
         break;
       }
     }
