@@ -114,8 +114,8 @@ module.exports.run = async (MAIN, has_iv, target, sighting, internal_value, time
     var report_dict = {
       "type":"wild",
       "pokemon":gender_str + form_str + pokemon_name,
-      "gps": sighting.latitude + "," + sighting.longitude,
-      "weather": weather_boost,
+      "gps": Number(sighting.latitude).toFixed(6) + "," + Number(sighting.longitude).toFixed(6),
+      "weather": weather_boost.slice(3),
       "iv_percent": internal_value,
       "iv_long": sighting.individual_attack + " / " + sighting.individual_defense + " / " + sighting.individual_stamina,
       "level":sighting.pokemon_level,
