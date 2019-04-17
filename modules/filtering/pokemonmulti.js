@@ -26,50 +26,50 @@ module.exports.run = async (MAIN, sighting, main_area, sub_area, embed_area, ser
       else{ gender = 'all'; }
 
       // CHECK IF FILTER EXISTS
-      if (!filter) {console.error('[Pokébot] ['+MAIN.Bot_Time(null,'stamp')+'] The filter defined for'+pokemon_channel[0]+' does not appear to exist.'); break;}
+      if (!filter) {console.error('[Pokébot] ['+MAIN.Bot_Time(null,'stamp')+'] The filter defined for'+pokemon_channel[0]+' does not appear to exist.'); return;}
       // CHECK IF CHANNEL EXISTS
-      if (!channel) {console.error('[Pokébot] ['+MAIN.Bot_Time(null,'stamp')+'] The channel '+pokemon_channel[0]+' does not appear to exist.'); break;}
+      if (!channel) {console.error('[Pokébot] ['+MAIN.Bot_Time(null,'stamp')+'] The channel '+pokemon_channel[0]+' does not appear to exist.'); return;}
       // POST WITHOUT IV IF ENABLED
       if (filter.Post_without_IV){
         if (sighting.cp > 0){
-          break;
+          return;
         } else if (filter[MAIN.pokemon[sighting.pokemon_id].name] == 'False'){
-          break;
+          return;
         } else {
           Send_Pokemon.run(MAIN, false, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
-          break;
+          return;
         }
       }
       // CHECK IF SIGHTING HAS A CP
       if (!sighting.cp > 0){
-        break;
+        return;
       }
       // CHECK IF FILTER HAS INDIVIDUAL POKEMON IV REQUIREMENT
       if (filter[MAIN.pokemon[sighting.pokemon_id].name] != 'True'){
         if (filter[MAIN.pokemon[sighting.pokemon_id].name] == 'False'){
-          break;
+          return;
         } else if (internal_value > filter[MAIN.pokemon[sighting.pokemon_id].name].min_iv && internal_value <= filter.max_iv){
-          Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone); break;
+          Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone); return;
         } else if (sighting.pokemon_level > filter.min_level && sighting.pokemon_level <= filter.max_level){
-          Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone); break;
+          Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone); return;
         } else if (sighting.cp > filter.min_cp && sighting.cp <= filter.max_cp)){
-          Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone); break;
+          Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone); return;
         } else if (filter[MAIN.pokemon[sighting.pokemon_id].name].min_iv > internal_value || filter.max_iv < internal_value){
-          sightingFailed(MAIN, filter, 'IV'); break;
+          sightingFailed(MAIN, filter, 'IV'); return;
         } else if (filter.min_cp > sighting.cp || filter.max_cp < sighting.cp){
-          sightingFailed(MAIN, filter, 'CP'); break;
+          sightingFailed(MAIN, filter, 'CP'); return;
         } else if (filter.min_level > sighting.pokemon_level || filter.max_level < sighting.pokemon_level){
-          sightingFailed(MAIN, filter, 'LEVEL'); break;
+          sightingFailed(MAIN, filter, 'LEVEL'); return;
         }
-        break;
+        return;
       }
       // CHECK IF FILTER HAS INDIVIDUAL VALUE REQUIREMENTS
-      if (filter.min_iv.length > 3{
+      if (filter.min_iv.length > 3){
         // SEND SIGHTING THROUGH ALL FILTERS
         let min_iv = filter.min_iv.split('/');
         let max_iv = filter.max_iv.split('/');
         if (!filter[MAIN.pokemon[sighting.pokemon_id].name]){
-          sightingFailed(MAIN, filter, 'IV'); break;
+          sightingFailed(MAIN, filter, 'IV'); return;
         } else if (sighting.individual_attack > min_iv[0] && sighting.individual_attack <= max_iv[0]){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
@@ -83,34 +83,35 @@ module.exports.run = async (MAIN, sighting, main_area, sub_area, embed_area, ser
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
           }
         } else if (min_iv[0] > sighting.individual_attack || min_iv[1] > sighting.individual_defense || min_iv[2] > sighting.individual_stamina || max_iv[0] < sighting.individual_attack || max_iv[1] < sighting.individual_defense || max_iv[2] < sighting.individual_stamina){
-          sightingFailed(MAIN, filter, 'IV'); break;
+          sightingFailed(MAIN, filter, 'IV'); return;
         } else if (filter.min_cp > sighting.cp || filter.max_cp < sighting.cp){
-          sightingFailed(MAIN, filter, 'CP'); break;
+          sightingFailed(MAIN, filter, 'CP'); return;
         } else if (filter.min_level > sighting.pokemon_level || filter.max_level < sighting.pokemon_level){
-          sightingFailed(MAIN, filter, 'LEVEL'); break;
+          sightingFailed(MAIN, filter, 'LEVEL'); return;
         }
-        break;
+        return;
       } else {
         if (internal_value > filter.min_iv && internal_value <= filter.max_iv){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
           }
-        if (sighting.pokemon_level > filter.min_level && sighting.pokemon_level <= filter.max_level){
+        } else if (sighting.pokemon_level > filter.min_level && sighting.pokemon_level <= filter.max_level){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
           }
-        if (sighting.cp > filter.min_cp && sighting.cp <= filter.max_cp){
+        } else if (sighting.cp > filter.min_cp && sighting.cp <= filter.max_cp){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
           }
         } else if(filter.min_iv > internal_value || filter.max_iv < internal_value){
-          sightingFailed(MAIN, filter, 'IV'); break;
+          sightingFailed(MAIN, filter, 'IV'); return;
         } else if (filter.min_cp > sighting.cp || filter.max_cp < sighting.cp){
-          sightingFailed(MAIN, filter, 'CP'); break;
+          sightingFailed(MAIN, filter, 'CP'); return;
         } else if (filter.min_level > sighting.pokemon_level || filter.max_level < sighting.pokemon_level){
-          sightingFailed(MAIN, filter, 'LEVEL'); break;
+          sightingFailed(MAIN, filter, 'LEVEL'); return;
         }
-        break;}}
+        return;
+      }
     }
   }; return;
 }
