@@ -17,6 +17,7 @@ module.exports.run = async (MAIN, has_iv, target, sighting, internal_value, time
   let form_name = '';
   if (form > 0){
     form_name = '['+MAIN.forms[sighting.pokemon_id][form]+'] ';
+    form_str = MAIN.forms[sighting.pokemon_id][form] + ' ';
   }
 
   // DEFINE VARIABLES
@@ -45,9 +46,6 @@ module.exports.run = async (MAIN, has_iv, target, sighting, internal_value, time
     case 2: gender_str = 'Female '; break;
   }
 
-  // GET FORM
-  let form_str = ''
-  if(sighting.form > 0 && MAIN.pokemon.alolan_forms.indexOf(sighting.form) >= 0){ form_str = 'Alolan ';}
   // Round IV
   internal_value = Math.round(internal_value);
 
