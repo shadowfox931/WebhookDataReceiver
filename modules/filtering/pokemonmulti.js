@@ -31,7 +31,7 @@ module.exports.run = async (MAIN, sighting, main_area, sub_area, embed_area, ser
       if (!channel) {console.error('[Pokébot] ['+MAIN.Bot_Time(null,'stamp')+'] The channel '+pokemon_channel[0]+' does not appear to exist.'); return;}
       // POST WITHOUT IV IF ENABLED
       if (filter.Post_without_IV){
-        if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 34] Post_without_IV is True '+filter.name+'.'); } return;
+        if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 34] Post_without_IV is True '+filter.name+'.'); }
         if (sighting.cp > 0){
           if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 36] Sighting has CP '+filter.name+'.'); } return;
         } else if (filter[MAIN.pokemon[sighting.pokemon_id].name] == 'False'){
