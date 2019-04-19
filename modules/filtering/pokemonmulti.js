@@ -26,11 +26,11 @@ module.exports.run = async (MAIN, sighting, main_area, sub_area, embed_area, ser
       else{ gender = 'all'; }
 
       // CHECK IF FILTER EXISTS
-      if (!filter) {console.error('[Pokébot] ['+MAIN.Bot_Time(null,'stamp')+'] The filter defined for'+pokemon_channel[0]+' does not appear to exist.'); return;}
+      if (!filter) {console.error('[Pok�bot] ['+MAIN.Bot_Time(null,'stamp')+'] The filter defined for'+pokemon_channel[0]+' does not appear to exist.'); return;}
       // CHECK IF CHANNEL EXISTS
-      if (!channel) {console.error('[Pokébot] ['+MAIN.Bot_Time(null,'stamp')+'] The channel '+pokemon_channel[0]+' does not appear to exist.'); return;}
+      if (!channel) {console.error('[Pok�bot] ['+MAIN.Bot_Time(null,'stamp')+'] The channel '+pokemon_channel[0]+' does not appear to exist.'); return;}
       // POST WITHOUT IV IF ENABLED
-      if (filter.Post_without_IV){
+      if (filter.Post_Without_IV){
         if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 34] Post_without_IV is True '+filter.name+'.'); }
         if (sighting.cp > 0){
           if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 36] Sighting has CP '+filter.name+'.'); } return;
