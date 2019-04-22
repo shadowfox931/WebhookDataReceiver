@@ -32,14 +32,16 @@ module.exports.run = async (MAIN, sighting, main_area, sub_area, embed_area, ser
       // POST WITHOUT IV IF ENABLED
       if (filter.Post_Without_IV){
         if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 34] Post_without_IV is True '+filter.name+'.'); }
-        if (sighting.cp > 0){
-          if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 36] Sighting has CP '+filter.name+'.'); } return;
-        } else if (!filter[MAIN.pokemon[sighting.pokemon_id].name]["rare"]){
-          if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 38] Rare spawns turned off '+filter.name+'.'); } return;
+        if (filter[MAIN.pokemon[sighting.pokemon_id].name]["rare"]){
+          if (sighting.cp > 0){
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 36] Sighting has CP '+filter.name+'.'); }
+          } else {
+            Send_Pokemon.run(MAIN, false, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 41] Sighting sent '+filter.name+'.'); } return;
+            return;
+          }
         } else {
-          Send_Pokemon.run(MAIN, false, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
-          if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 41] Sighting sent '+filter.name+'.'); } return;
-          return;
+          if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 38] Rare spawns turned off for '+MAIN.pokemon[sighting.pokemon_id].name+' '+filter.name+'.'); } return;
         }
       }
       // CHECK IF SIGHTING HAS A CP OR SET TO FALSE
