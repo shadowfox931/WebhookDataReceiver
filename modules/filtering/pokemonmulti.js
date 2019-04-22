@@ -26,22 +26,21 @@ module.exports.run = async (MAIN, sighting, main_area, sub_area, embed_area, ser
       else{ gender = 'all'; }
 
       // CHECK IF FILTER EXISTS
-      if (!filter) {console.error('[Pok�bot] ['+MAIN.Bot_Time(null,'stamp')+'] The filter defined for'+pokemon_channel[0]+' does not appear to exist.'); return;}
+      if (!filter) {console.error('[Pokebot] ['+MAIN.Bot_Time(null,'stamp')+'] The filter defined for'+pokemon_channel[0]+' does not appear to exist.'); return;}
       // CHECK IF CHANNEL EXISTS
-      if (!channel) {console.error('[Pok�bot] ['+MAIN.Bot_Time(null,'stamp')+'] The channel '+pokemon_channel[0]+' does not appear to exist.'); return;}
+      if (!channel) {console.error('[Pokebot] ['+MAIN.Bot_Time(null,'stamp')+'] The channel '+pokemon_channel[0]+' does not appear to exist.'); return;}
       // POST WITHOUT IV IF ENABLED
       if (filter.Post_Without_IV){
-        if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 34] Post_without_IV is True '+filter.name+'.'); }
+        if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 34] filter Post_without_IV setting is True in '+filter.name+'.'); }
         if (filter[MAIN.pokemon[sighting.pokemon_id].name]["rare"]){
           if (sighting.cp > 0){
-            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 36] Sighting has CP '+filter.name+'.'); }
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 37] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting has CP '+filter.name+'.'); }
           } else {
             Send_Pokemon.run(MAIN, false, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
-            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 41] Sighting sent '+filter.name+'.'); } return;
-            return;
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 40] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting sent via '+filter.name+'.'); } return;
           }
         } else {
-          if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 38] Rare spawns turned off for '+MAIN.pokemon[sighting.pokemon_id].name+' '+filter.name+'.'); } return;
+          if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 43] Rare spawns turned off for '+MAIN.pokemon[sighting.pokemon_id].name+' in '+filter.name+'.'); }
         }
       }
       // CHECK IF SIGHTING HAS A CP OR SET TO FALSE
@@ -57,21 +56,23 @@ module.exports.run = async (MAIN, sighting, main_area, sub_area, embed_area, ser
         if (internal_value > filter[MAIN.pokemon[sighting.pokemon_id].name].min_iv && internal_value <= filter.max_iv){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
-            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 58] Sighting sent '+filter.name+'.'); } return;
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 59] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting sent via '+filter.name+'. IV:' + internal_value + ' Min:' + filter.min_iv + ' Max:' + filter.max_iv); } return;
           }
-          if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 60] Sighting sent '+filter.name+'. IV:' + internal_value + ' Min:' + filter.min_iv + ' Max:' + filter.max_iv); } return;
+        } else if (internal_value < 1 && filter.Post_Zero_IV){
+          if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
+            Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 64] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting sent via '+filter.name+'. IV:' + internal_value + ' Min:' + filter.min_level + ' Max:' + filter.max_level); } return;
+          }
         } else if (sighting.pokemon_level > filter.min_level && sighting.pokemon_level <= filter.max_level && filter[MAIN.pokemon[sighting.pokemon_id].name]["level"]){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
-            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 64] Sighting sent '+filter.name+'.'); } return;
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 69] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting sent via '+filter.name+'. LEVEL:' + sighting.pokemon_level + ' Min:' + filter.min_level + ' Max:' + filter.max_level); } return;
           }
-          if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 66] Sighting sent '+filter.name+'. LEVEL:' + sighting.pokemon_level + ' Min:' + filter.min_level + ' Max:' + filter.max_level); } return;
         } else if (sighting.cp > filter.min_cp && sighting.cp <= filter.max_cp && filter[MAIN.pokemon[sighting.pokemon_id].name]["cp"]){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
-            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 70] Sighting sent '+filter.name+'.'); } return;
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 74] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting sent via '+filter.name+'. CP:' + sighting.cp + ' Min:' + filter.min_cp + ' Max:' + filter.max_cp); } return;
           }
-          if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 72] Sighting sent '+filter.name+'. CP:' + sighting.cp + ' Min:' + filter.min_cp + ' Max:' + filter.max_cp); } return;
         } else if (filter[MAIN.pokemon[sighting.pokemon_id].name].min_iv > internal_value || filter.max_iv < internal_value){
           sightingFailed(MAIN, filter, 'IV', "74"); return;
         } else if (filter.min_cp > sighting.cp || filter.max_cp < sighting.cp){
@@ -89,27 +90,32 @@ module.exports.run = async (MAIN, sighting, main_area, sub_area, embed_area, ser
         if (sighting.individual_attack > min_iv[0] && sighting.individual_attack <= max_iv[0] && filter[MAIN.pokemon[sighting.pokemon_id].name]["iv"]){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
-            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 90] Sighting sent '+filter.name+'.'); } return;
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 93] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting sent via '+filter.name+'.'); } return;
           }
         } else if (sighting.individual_defense > min_iv[1] && sighting.individual_defense <= max_iv[1] && filter[MAIN.pokemon[sighting.pokemon_id].name]["iv"]){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
-            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 95] Sighting sent '+filter.name+'.'); } return;
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 98] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting sent via '+filter.name+'.'); } return;
           }
         } else if (sighting.individual_stamina > min_iv[2] && sighting.individual_stamina <= max_iv[2] && filter[MAIN.pokemon[sighting.pokemon_id].name]["iv"]){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
-            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 100] Sighting sent '+filter.name+'.'); } return;
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 103] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting sent via '+filter.name+'.'); } return;
+          }
+        } else if (internal_value < 1 && filter.Post_Zero_IV){
+          if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
+            Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 108] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting sent via '+filter.name+'.'); } return;
           }
         } else if (sighting.pokemon_level > filter.min_level && sighting.pokemon_level <= filter.max_level && filfilter[MAIN.pokemon[sighting.pokemon_id].name]["level"]){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
-            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 105] Sighting sent '+filter.name+'. LEVEL:' + sighting.pokemon_level + ' Min:' + filter.min_level + ' Max:' + filter.max_level); } return;
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 113] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting sent via '+filter.name+'. LEVEL:' + sighting.pokemon_level + ' Min:' + filter.min_level + ' Max:' + filter.max_level); } return;
           }
         } else if (sighting.cp > filter.min_cp && sighting.cp <= filter.max_cp && filter[MAIN.pokemon[sighting.pokemon_id].name]["cp"]){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
-            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 110] Sighting sent '+filter.name+'. CP:' + sighting.cp + ' Min:' + filter.min_cp + ' Max:' + filter.max_cp); } return;
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 118] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting sent via '+filter.name+'. CP:' + sighting.cp + ' Min:' + filter.min_cp + ' Max:' + filter.max_cp); } return;
           }
         } else if (min_iv[0] > sighting.individual_attack || min_iv[1] > sighting.individual_defense || min_iv[2] > sighting.individual_stamina || max_iv[0] < sighting.individual_attack || max_iv[1] < sighting.individual_defense || max_iv[2] < sighting.individual_stamina){
           sightingFailed(MAIN, filter, 'IV', "113"); return;
@@ -123,17 +129,22 @@ module.exports.run = async (MAIN, sighting, main_area, sub_area, embed_area, ser
         if (internal_value > filter.min_iv && internal_value <= filter.max_iv && filter[MAIN.pokemon[sighting.pokemon_id].name]["iv"]){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
-            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 124] Sighting sent '+filter.name+'. IV:' + internal_value + ' Min:' + filter.min_iv + ' Max:' + filter.max_iv); } return;
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 132] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting sent via '+filter.name+'. IV:' + internal_value + ' Min:' + filter.min_iv + ' Max:' + filter.max_iv); } return;
+          }
+        } else if (internal_value < 1 && filter.Post_Zero_IV){
+          if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
+            Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 137] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting sent via '+filter.name+'. IV:' + internal_value + ' Min:' + filter.min_level + ' Max:' + filter.max_level); } return;
           }
         } else if (sighting.pokemon_level > filter.min_level && sighting.pokemon_level <= filter.max_level && filter[MAIN.pokemon[sighting.pokemon_id].name]["level"]){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
-            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 129] Sighting sent '+filter.name+'. LEVEL:' + sighting.pokemon_level + ' Min:' + filter.min_level + ' Max:' + filter.max_level); } return;
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 142] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting sent via '+filter.name+'. LEVEL:' + sighting.pokemon_level + ' Min:' + filter.min_level + ' Max:' + filter.max_level); } return;
           }
         } else if (sighting.cp > filter.min_cp && sighting.cp <= filter.max_cp && filter[MAIN.pokemon[sighting.pokemon_id].name]["cp"]){
           if(filter.gender.toLowerCase() == 'all' || filter.gender.toLowerCase() == gender){
             Send_Pokemon.run(MAIN, true, channel, sighting, internal_value, time_now, main_area, sub_area, embed_area, server, timezone);
-            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 134] Sighting sent '+filter.name+'. CP:' + sighting.cp + ' Min:' + filter.min_cp + ' Max:' + filter.max_cp); } return;
+            if(MAIN.debug.Pokemon == 'ENABLED'){ console.info('[DEBUG] [filtering/pokemon.js - 147] ' + MAIN.pokemon[sighting.pokemon_id].name + ' sighting sent via '+filter.name+'. CP:' + sighting.cp + ' Min:' + filter.min_cp + ' Max:' + filter.max_cp); } return;
           }
         } else if(filter.min_iv > internal_value || filter.max_iv < internal_value){
           sightingFailed(MAIN, filter, 'IV', "137"); return;
