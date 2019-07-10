@@ -51,7 +51,7 @@ module.exports.run = async (MAIN, quest, channel, quest_reward, simple_reward, m
   if(MAIN.config.QUEST.Discord_Feeds == 'ENABLED'){
     let report_dict = {
       "type":"research",
-      "pokestop":quest.pokestop_name,
+      "pokestop":quest.pokestop_name.replace(/"/g, ""),
       "gps":quest.latitude + "," + quest.longitude,
       "quest":quest_task,
       "reward":quest_reward
